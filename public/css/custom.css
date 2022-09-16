@@ -1,0 +1,15 @@
+#header .logo {
+    margin: 4px 0 0;
+}
+
+#header .logo img, #footer .logo img {
+    filter: alpha(opacity=1);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    opacity: 1;
+    max-height: 63px;
+}
+#footer .logo img {
+    max-height: 40px;
+}
