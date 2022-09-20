@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+    <style>
+        article .box { margin-bottom: 0; }
+        .listing-style3 .box, .listing-style3.box {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock stylesheets %}
 
 {% block content %}
     <div class="page-title-container">
@@ -20,7 +27,7 @@
             <div id="main">
                 <div class="row">
                     <div class="col-sm-4 col-md-3">
-                        <h4 class="search-results-title"><i class="soap-icon-search"></i><b>{{ results|length }}</b> results found.</h4>
+                        <h4 class="search-results-title"><i class="soap-icon-search"></i><b id="result_count">...</b> results found.</h4>
                         <div class="toggle-container filters-container">
                             <div class="panel style1 arrow-right">
                                 <h4 class="panel-title">
@@ -39,38 +46,6 @@
 
                             <div class="panel style1 arrow-right">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#flight-times-filter" class="collapsed">Flight Times</a>
-                                </h4>
-                                <div id="flight-times-filter" class="panel-collapse collapse">
-                                    <div class="panel-content">
-                                        <div id="flight-times" class="slider-color-yellow"></div>
-                                        <br />
-                                        <span class="start-time-label pull-left"></span>
-                                        <span class="end-time-label pull-right"></span>
-                                        <div class="clearer"></div>
-                                    </div><!-- end content -->
-                                </div>
-                            </div>
-
-                            <div class="panel style1 arrow-right">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#flight-stops-filter" class="collapsed">Flight Stops</a>
-                                </h4>
-                                <div id="flight-stops-filter" class="panel-collapse collapse">
-                                    <div class="panel-content">
-                                        <ul class="check-square filters-option">
-                                            <li><a href="#">1 Stop</a></li>
-                                            <li><a href="#">2 Stops</a></li>
-                                            <li class="active"><a href="#">3 Stops</a></li>
-                                            <li><a href="#">MultiStops</a></li>
-                                        </ul>
-                                        <a class="button btn-mini">MORE</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel style1 arrow-right">
-                                <h4 class="panel-title">
                                     <a data-toggle="collapse" href="#airlines-filter" class="collapsed">Airlines</a>
                                 </h4>
                                 <div id="airlines-filter" class="panel-collapse collapse">
@@ -83,41 +58,6 @@
                                             <li><a href="#">US airways<small>($3,158)</small></a></li>
                                             <li><a href="#">Air France<small>($4,239)</small></a></li>
                                             <li><a href="#">Air tahiti nui<small>($5,872)</small></a></li>
-                                        </ul>
-                                        <a class="button btn-mini">MORE</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel style1 arrow-right">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#flight-type-filter" class="collapsed">Flight Type</a>
-                                </h4>
-                                <div id="flight-type-filter" class="panel-collapse collapse">
-                                    <div class="panel-content">
-                                        <ul class="check-square filters-option">
-                                            <li><a href="#">Business</a></li>
-                                            <li><a href="#">First class</a></li>
-                                            <li class="active"><a href="#">Economy</a></li>
-                                            <li><a href="#">Premium Economy</a></li>
-                                        </ul>
-                                        <a class="button btn-mini">MORE</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel style1 arrow-right">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#inflight-experience-filter" class="collapsed">Inflight Experience</a>
-                                </h4>
-                                <div id="inflight-experience-filter" class="panel-collapse collapse">
-                                    <div class="panel-content">
-                                        <ul class="check-square filters-option">
-                                            <li><a href="#">Inflight Dining</a></li>
-                                            <li><a href="#">Music</a></li>
-                                            <li class="active"><a href="#">Sky Shopping</a></li>
-                                            <li><a href="#">Wi-fi</a></li>
-                                            <li><a href="#">Seats &amp; Cabin</a></li>
                                         </ul>
                                         <a class="button btn-mini">MORE</a>
                                     </div>
@@ -166,73 +106,27 @@
 
                             <ul class="swap-tiles clearfix block-sm">
                                 <li class="swap-list active">
-                                    <a href="flight-list-view.html"><i class="soap-icon-list"></i></a>
+                                    <a href="#"><i class="soap-icon-list"></i></a>
                                 </li>
                                 <li class="swap-grid">
-                                    <a href="flight-grid-view.html"><i class="soap-icon-grid"></i></a>
+                                    <a href="#"><i class="soap-icon-grid"></i></a>
                                 </li>
                                 <li class="swap-block">
-                                    <a href="flight-block-view.html"><i class="soap-icon-block"></i></a>
+                                    <a href="#"><i class="soap-icon-block"></i></a>
                                 </li>
                             </ul>
                         </div>
-                        <div class="flight-list listing-style3 flight">
-                            {% for result in results %}
-                            <article class="box">
-                                <figure class="col-xs-3 col-sm-2">
-                                    <span><img alt="" src="http://placehold.it/270x160"></span>
-                                </figure>
-                                <div class="details col-xs-9 col-sm-10">
-                                    <div class="details-wrapper">
-                                        <div class="first-row">
-                                            <div>
-                                                <h4 class="box-title">({{ result.getFromWhere }}) to ({{ result.getToWhere }})<small>{% if result.isHasTwoWay %}{% else %}Oneway flight{% endif %}</small></h4>
-                                                <a class="button btn-mini stop">1 STOP</a>
-                                                <div class="amenities">
-                                                    <i class="soap-icon-wifi circle"></i>
-                                                    <i class="soap-icon-entertainment circle"></i>
-                                                    <i class="soap-icon-fork circle"></i>
-                                                    <i class="soap-icon-suitcase circle"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <span class="price"><small>AVG/PERSON</small>{{ result.getPrice }}&nbsp;{{ result.getCurrency }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="second-row">
-                                            <div class="time">
-                                                <div class="take-off col-sm-4">
-                                                    <div class="icon"><i class="soap-icon-plane-right yellow-color"></i></div>
-                                                    <div>
-                                                        <span class="skin-color">Take off</span><br />Wed Nov 13, 2013 7:50 Am
-                                                    </div>
-                                                </div>
-                                                <div class="landing col-sm-4">
-                                                    <div class="icon"><i class="soap-icon-plane-right yellow-color"></i></div>
-                                                    <div>
-                                                        <span class="skin-color">landing</span><br />Wed Nov 13, 2013 9:20 am
-                                                    </div>
-                                                </div>
-                                                <div class="total-time col-sm-4">
-                                                    <div class="icon"><i class="soap-icon-clock yellow-color"></i></div>
-                                                    <div>
-                                                        <span class="skin-color">total time</span><br />13 Hour, 40 minutes
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="action">
-                                                <a href="flight-detailed.html" class="button btn-small full-width">SELECT NOW</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-                            {% endfor %}
-                        </div>
-                        <a class="button uppercase full-width btn-large">load more listings</a>
+
+                        <div class="flight-list listing-style3 flight" id="flight_results"></div>
+
+                        <a class="button uppercase full-width btn-large" style="display: none;">load more listings</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 {% endblock content %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/flight_results.js') }}"></script>
+{% endblock javascripts %}

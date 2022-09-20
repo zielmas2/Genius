@@ -24,12 +24,15 @@ class FlightResult
     public string $airline;
     public string $airlineCode;
     public string $carrier          = '';
-    public string $flightNumber;
-    public string $flightID;
+    public string $flightNumber     = '';
+    public string $flightID         = '';
     public string $flightTime       = '';
-    public string $flightType;
+    public string $flightType       = '';
     public string $freeBag          = '';
     public string $freeBagSize      = '';
+    public int $adt;
+    public int $kid     = 0;
+    public int $inf     = 0;
 
     /**
      * @return string
@@ -445,6 +448,54 @@ class FlightResult
     public function setAirlineCode(string $airlineCode): void
     {
         $this->airlineCode = $airlineCode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAdt(): int
+    {
+        return $this->adt;
+    }
+
+    /**
+     * @param int $adt
+     */
+    public function setAdt(int $adt): void
+    {
+        $this->adt = $adt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKid(): int
+    {
+        return $this->kid;
+    }
+
+    /**
+     * @param int $kid
+     */
+    public function setKid(int $kid): void
+    {
+        $this->kid = $kid;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInf(): int
+    {
+        return $this->inf;
+    }
+
+    /**
+     * @param int $inf
+     */
+    public function setInf(int $inf): void
+    {
+        $this->inf = $inf;
     }
 
 

@@ -10,6 +10,13 @@
     opacity: 1;
     max-height: 63px;
 }
+
+#footer .footer-wrapper {
+    padding: 10px 0;
+}
 #footer .logo img {
     max-height: 40px;
 }
+
+.loader { width: 100%; height: 100%; position: fixed; top: 0; z-index: 999; background: rgb(0, 0, 0, 0.3); display: none; }
+.loader img { position: fixed; top: 47%; left: 49%; max-width: 190px; max-height: 100px; }

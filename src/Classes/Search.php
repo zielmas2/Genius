@@ -7,7 +7,7 @@ class Search
     public string $fromWhere    = '';
     public string $toWhere      = '';
     public string $departDate   = '';
-    public string $offDate      = '';
+    public string $returnDate      = '';
     public int $whoADT          = 1;
     public int $whoKid          = 0;
     public int $whoInf          = 0;

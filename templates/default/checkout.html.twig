@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="page-title-container">
+        <div class="container">
+            <div class="page-title pull-left">
+                <h2 class="entry-title">Flight Booking</h2>
+            </div>
+            <ul class="breadcrumbs pull-right">
+                <li><a href="{{ path('app_index') }}">HOME</a></li>
+                <li class="active">Flight Booking</li>
+            </ul>
+        </div>
+    </div>
+
+    <section id="content" class="gray-area">
+        <div class="container">
+            <div class="row">
+                <div id="main" class="col-sms-6 col-sm-8 col-md-9">
+                    <div class="booking-section travelo-box">
+
+                        <form class="booking-form" id="frm_sale">
+                            <input type="hidden" name="sId" value="0">
+                            <input type="hidden" name="fromWhere" value="{{ searchTicket.fromWhere }}">
+                            <input type="hidden" name="toWhere" value="{{ searchTicket.toWhere }}">
+                            <input type="hidden" name="departDate" value="{{ searchTicket.departingDate|date('m/d/Y') }}">
+                            <input type="hidden" name="returnDepartingDate" value="{{ searchTicket.returnDepartingDate?searchTicket.returnDepartingDate|date('m/d/Y'):'' }}">
+                            <input type="hidden" name="whoADT" value="{{ searchTicket.adult }}">
+                            <input type="hidden" name="whoKid" value="{{ searchTicket.kid }}">
+                            <input type="hidden" name="whoInf" value="{{ searchTicket.infant }}">
+                            <input type="hidden" name="dateFormat" value="1">
+                            <div class="person-information">
+                                <h2>Personal Information</h2>
+                                {% for i in 1..searchTicket.adult %}
+                                    {% if searchTicket.adult>1 %}<h3>{{ i }}. Adult</h3>{% endif %}
+                                <div class="form-group row">
+                                    <div class="col-sm-6 col-md-5">
+                                        <label for="name">first name</label>
+                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                    <div class="col-sm-6 col-md-5">
+                                        <label for="lastname">last name</label>
+                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                </div>
+                                    {% if i==1 %}
+                                <div class="form-group row">
+                                    {# <div class="col-sm-6 col-md-5">
+                                        <label for="name">Identify No</label>
+                                        <input type="text" id="name" name="name" class="input-text full-width" value="" placeholder="" />
+                                    </div> #}
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>address</label>
+                                        <input type="text" name="address" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>email address</label>
+                                        <input type="text" name="email" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>Country</label>
+                                        <div class="selector">
+                                            <select name="country" class="full-width">
+                                                <option>Germany (+49)</option>
+                                                <option>United States (+1)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-5">
+                                        <label for="phone">Phone number</label>
+                                        <input type="text" id="phone" name="phone" class="input-text full-width" value="" placeholder="+49 ..." />
+                                    </div>
+                                </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <hr />
+                            <div class="card-information">
+                                <h2>Card Information</h2>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>Card number</label>
+                                        <input type="text" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>Card holder name</label>
+                                        <input type="text" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>Expiration Date</label>
+                                        <div class="constant-column-2">
+                                            <div class="selector">
+                                                <select class="full-width">
+                                                    <option>month</option>
+                                                </select>
+                                            </div>
+                                            <div class="selector">
+                                                <select class="full-width">
+                                                    <option>year</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-5">
+                                        <label>CVV</label>
+                                        <input type="text" class="input-text full-width" value="" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> By continuing, you agree to the <a href="#"><span class="skin-color">Terms and Conditions</span></a>.
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6 col-md-5">
+                                    <button type="submit" class="full-width btn-large">CONFIRM BOOKING</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="sidebar col-sms-6 col-sm-4 col-md-3">
+                    <div class="booking-details travelo-box">
+                        <h4>Booking Details</h4>
+                        <article class="flight-booking-details">
+                            <figure class="clearfix">
+                                <a title="" href="flight-detailed.html" class="middle-block"><img class="middle-item" alt="" src="http://placehold.it/75x75"></a>
+                                <div class="travel-title">
+                                    <h5 class="box-title">({{ searchTicket.fromWhere }}) to ({{ searchTicket.toWhere }})<small>Oneway flight</small></h5>
+                                    <a href="#" class="button">EDIT</a>
+                                </div>
+                            </figure>
+                            <div class="details">
+                                <div class="constant-column-3 timing clearfix">
+                                    <div class="check-in">
+                                        <label>Take off</label>
+                                        <span>NOV 30, 2013<br />7:50 am</span>
+                                    </div>
+                                    <div class="duration text-center">
+                                        <i class="soap-icon-clock"></i>
+                                        <span>13h, 40m</span>
+                                    </div>
+                                    <div class="check-out">
+                                        <label>landing</label>
+                                        <span>Nov 13 2013<br />9:20 am</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <h4>Other Details</h4>
+                        <dl class="other-details">
+                            <dt class="feature">Airline:</dt><dd class="value">{{ ticket.airline }}</dd>
+                            <dt class="feature">Flight type:</dt><dd class="value">Economy</dd>
+                            <dt class="feature">base fare:</dt><dd class="value">{{ ticket.adultPrice }}</dd>
+                            <dt class="feature">taxes and fees:</dt><dd class="value">{{ ticket.tax }}</dd>
+                            <dt class="total-price">Total Price</dt><dd class="total-price-value">{{ ticket.adultPrice }}&nbsp;{{ ticket.currency }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/flight_sale.js') }}"></script>
+{% endblock javascripts %}
