@@ -79,15 +79,15 @@
                                         {% if ticket.direction==2 %}
                                         <div class="table-row">
                                             <div class="table-cell">
-                                                <h4 class="box-title">Rome to Paris<small>30 Jan 2015</small></h4>
+                                                <h4 class="box-title">({{ ticket.searchTicketId.toWhere }}) to ({{ ticket.searchTicketId.fromWhere }})<small></small></h4>
                                             </div>
                                             <div class="table-cell">
                                                 <i class="icon soap-icon-plane-right take-off"></i>
-                                                <dl><dt>Departs</dt><dd>22:10 PM</dd></dl>
+                                                <dl><dt>Departs</dt><dd>{{ ticket.returnDepartureDate|date('m.d.Y H:i') }}</dd></dl>
                                             </div>
                                             <div class="table-cell">
                                                 <i class="icon soap-icon-plane-right landing"></i>
-                                                <dl><dt>Arrives</dt><dd>08:50 PM</dd></dl>
+                                                <dl><dt>Arrives</dt><dd>{{ ticket.returnArrivingDate|date('m.d.Y H:i') }}</dd></dl>
                                             </div>
                                         </div>
                                         {% endif %}
@@ -159,20 +159,40 @@
                 '                   <div class="col-sm-4 table-cell travelo-box">\n'+
                 '                       <dl class="term-description">\n'+
                 '                           <dt>PNR:</dt><dd style="font-size: 18px; color: red; font-weight: bold; line-height: 1;">'+pnr+'</dd>\n'+
-                '                           <dt>Customer:</dt><dd>'+pnr_response.name+'&nbsp;'+pnr_response.lastName+'</dd>\n'+
-                '                           <dt>Price:</dt><dd>'+pnr_response.totalPrice+'&nbsp;'+pnr_response.currency+'</dd>\n'+
-                '                           <dt>Date:</dt><dd>'+pnr_response.dateDeparture+'</dd>\n'+
-                '                       </dl>\n'+
+                '                           <dt>Date:</dt><dd>'+pnr_response.flightInf[0].dateDeparture+'</dd>\n'+
+                '                           <dt>Customer:</dt><dd>'+pnr_response.customerInf[0].name+'&nbsp;'+pnr_response.customerInf[0].lastName+'</dd>\n'+
+                '                           <dt>Price:</dt><dd>'+pnr_response.customerInf[0].totalPrice+'&nbsp;'+pnr_response.customerInf[0].currency+'</dd>\n';
+            if (typeof pnr_response.customerInf[1]!='undefined')
+            {
+                html += '                           <dt>Customer 2:</dt><dd>'+pnr_response.customerInf[1].name+'&nbsp;'+pnr_response.customerInf[1].lastName+'</dd>\n'+
+                    '                           <dt>Price:</dt><dd>'+pnr_response.customerInf[1].totalPrice+'&nbsp;'+pnr_response.customerInf[1].currency+'</dd>\n';
+            }
+            if (typeof pnr_response.customerInf[2]!='undefined')
+            {
+                html += '                           <dt>Customer 3:</dt><dd>'+pnr_response.customerInf[2].name+'&nbsp;'+pnr_response.customerInf[2].lastName+'</dd>\n'+
+                    '                           <dt>Price:</dt><dd>'+pnr_response.customerInf[2].totalPrice+'&nbsp;'+pnr_response.customerInf[2].currency+'</dd>\n';
+            }
+            if (typeof pnr_response.customerInf[3]!='undefined')
+            {
+                html += '                           <dt>Customer 4:</dt><dd>'+pnr_response.customerInf[3].name+'&nbsp;'+pnr_response.customerInf[3].lastName+'</dd>\n'+
+                    '                           <dt>Price:</dt><dd>'+pnr_response.customerInf[3].totalPrice+'&nbsp;'+pnr_response.customerInf[3].currency+'</dd>\n';
+            }
+            if (typeof pnr_response.customerInf[4]!='undefined')
+            {
+                html += '                           <dt>Customer 5:</dt><dd>'+pnr_response.customerInf[4].name+'&nbsp;'+pnr_response.customerInf[4].lastName+'</dd>\n'+
+                    '                           <dt>Price:</dt><dd>'+pnr_response.customerInf[4].totalPrice+'&nbsp;'+pnr_response.customerInf[4].currency+'</dd>\n';
+            }
+            html += '                       </dl>\n'+
                 '                   </div>\n'+
                 '            <div class="col-sm-8 table-cell">\n'+
                 '                <div class="detailed-features">\n'+
                 '                    <div class="price-section clearfix" style="padding: 10px 20px 20px 20px;">\n'+
                 '                        <div class="details">\n'+
-                '                            <h4 class="box-title">'+pnr_response.fromCity+' to '+pnr_response.toCity+'<small>('+pnr_response.fromWhere+') to ('+pnr_response.toWhere+')</small></h4>\n'+
+                '                            <h4 class="box-title">'+pnr_response.flightInf[0].fromCity+' to '+pnr_response.flightInf[0].toCity+'<small>('+pnr_response.flightInf[0].fromWhere+') to ('+pnr_response.flightInf[0].toWhere+')</small></h4>\n'+
                 '                        </div>\n'+
                 '                        <div class="details">\n'+
                 '                            <span class="price"></span>\n'+
-                '                            <a href="javascript:;" class="button green btn-small uppercase">'+pnr_response.totalPrice+'&nbsp;'+pnr_response.currency+'</a>\n'+
+                '                            <a href="javascript:;" class="button green btn-small uppercase">'+pnr_response.customerInf[0].grandTotalPrice+'&nbsp;'+pnr_response.customerInf[0].currency+'</a>\n'+
                 '                        </div>\n'+
                 '                    </div>\n'+
                 '                    <div class="flights table-wrapper">\n'+
@@ -182,25 +202,25 @@
                 '                            </div>\n'+
                 '                            <div class="table-cell">\n'+
                 '                                <i class="icon soap-icon-plane-right take-off"></i>\n'+
-                '                                <dl><dt>Departs</dt><dd></dd>'+pnr_response.dateDeparture+'</dl>\n'+
+                '                                <dl><dt>Departs</dt><dd></dd>'+pnr_response.flightInf[0].dateDeparture+'</dl>\n'+
                 '                            </div>\n'+
                 '                            <div class="table-cell">\n'+
                 '                                <i class="icon soap-icon-plane-right landing"></i>\n'+
-                '                                <dl><dt>Arrives</dt><dd></dd>'+pnr_response.dateArrive+'</dl>\n'+
+                '                                <dl><dt>Arrives</dt><dd></dd>'+pnr_response.flightInf[0].dateArrive+'</dl>\n'+
                 '                            </div>\n'+
                 '                        </div>\n';
             if (pnr_response.hasReturn) {
                 html += '                        <div class="table-row">\n' +
                     '                            <div class="table-cell">\n' +
-                    '                                <h4 class="box-title">Rome to Paris<small>30 Jan 2015</small></h4>\n' +
+                    '                                <h4 class="box-title"><small>('+pnr_response.flightInf[1].toWhere+') to ('+pnr_response.flightInf[1].fromWhere+')</small></h4>\n' +
                     '                            </div>\n' +
                     '                            <div class="table-cell">\n' +
                     '                                <i class="icon soap-icon-plane-right take-off"></i>\n' +
-                    '                                <dl><dt>Departs</dt><dd>22:10 PM</dd></dl>\n' +
+                    '                                <dl><dt>Departs</dt><dd>'+pnr_response.flightInf[1].dateDeparture+'</dd></dl>\n' +
                     '                            </div>\n' +
                     '                            <div class="table-cell">\n' +
                     '                                <i class="icon soap-icon-plane-right landing"></i>\n' +
-                    '                                <dl><dt>Arrives</dt><dd>08:50 PM</dd></dl>\n' +
+                    '                                <dl><dt>Arrives</dt><dd>'+pnr_response.flightInf[1].dateArrive+'</dd></dl>\n' +
                     '                            </div>\n' +
                     '                        </div>\n';
             }

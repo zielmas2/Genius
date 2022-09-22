@@ -19,4 +19,9 @@ class Tool
         $arr = explode(':', $hourMinute);
         return ($arr[0].' '.$hourD.' ').(isset($arr[1]) && $arr[1]!=''?($arr[1].' '.$minuteD):'');
     }
+
+    public function formatPrice($amount, $currency, $symbol=1)
+    {
+        return ($symbol==2?($currency.'&nbsp;'):'').number_format($amount, 2, '.', ',').($symbol==1?('&nbsp;'.$currency):'');
+    }
 }

@@ -30,10 +30,10 @@ tjq('#frm_sale').submit(function (e) {
             text: xhr.message
         }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer) {
-                window.location.href = '/booking-result/'+xhr.pnr;
+                window.location.href = '/booking-result/'+xhr.results.ticketId;
             }
             else {
-                window.location.href = '';
+                window.location.href = '/booking-result/'+xhr.results.ticketId;
             }
         });
 

@@ -49,6 +49,12 @@ class Ticket
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $arriving_date = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $return_departure_date = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $return_arriving_date = null;
+
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $direction = null;
 
@@ -64,8 +70,14 @@ class Ticket
     #[ORM\Column(nullable: true)]
     private ?float $tax = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $total_price = null;
+
     #[ORM\Column(length: 3)]
     private ?string $currency = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $supplier_response_price = null;
 
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $pnr_no = null;
@@ -87,9 +99,6 @@ class Ticket
 
     #[ORM\OneToMany(mappedBy: 'ticket_id', targetEntity: TicketCustomer::class)]
     private Collection $ticket_customer;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $supplier_response_price = null;
 
     public function __construct()
     {
@@ -233,6 +242,30 @@ class Ticket
         return $this;
     }
 
+    public function getReturnDepartureDate(): ?\DateTimeInterface
+    {
+        return $this->return_departure_date;
+    }
+
+    public function setReturnDepartureDate(?\DateTimeInterface $return_departure_date): self
+    {
+        $this->return_departure_date = $return_departure_date;
+
+        return $this;
+    }
+
+    public function getReturnArrivingDate(): ?\DateTimeInterface
+    {
+        return $this->return_arriving_date;
+    }
+
+    public function setReturnArrivingDate(?\DateTimeInterface $return_arriving_date): self
+    {
+        $this->return_arriving_date = $return_arriving_date;
+
+        return $this;
+    }
+
     public function getDirection(): ?int
     {
         return $this->direction;
@@ -293,6 +326,18 @@ class Ticket
         return $this;
     }
 
+    public function getTotalPrice(): ?float
+    {
+        return $this->total_price;
+    }
+
+    public function setTotalPrice(?float $total_price): self
+    {
+        $this->total_price = $total_price;
+
+        return $this;
+    }
+
     public function getCurrency(): ?string
     {
         return $this->currency;
@@ -301,6 +346,18 @@ class Ticket
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getSupplierResponsePrice(): ?float
+    {
+        return $this->supplier_response_price;
+    }
+
+    public function setSupplierResponsePrice(?float $supplier_response_price): self
+    {
+        $this->supplier_response_price = $supplier_response_price;
 
         return $this;
     }
@@ -403,18 +460,6 @@ class Ticket
                 $ticketCustomer->setTicketId(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getSupplierResponsePrice(): ?float
-    {
-        return $this->supplier_response_price;
-    }
-
-    public function setSupplierResponsePrice(?float $supplier_response_price): self
-    {
-        $this->supplier_response_price = $supplier_response_price;
 
         return $this;
     }

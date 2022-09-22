@@ -59,20 +59,33 @@ class DefaultController extends AbstractController
         //var_dump($ticket);
         $searchTicket = $ticket->getSearchTicketId();
 
-        $cntAdult   = 1;
-        $cntKid     = 0;
-        $cntInf     = 0;
-
-        if ($ticket->getId())
+        if ($ticket->getPnrNo()!='')
         {
-            $tools = new Tool();
+            $this->addFlash(
+                'notice',
+                'This Ticket has PNR!'
+            );
 
-            $ticket->flightTimeDisp = $tools->parseHourMinute($ticket->getFlightTime(), 1);
-
-            $cntAdult = $searchTicket->getAdult();
-            $cntKid = $searchTicket->getKid();
-            $cntInf = $searchTicket->getInfant();
+            return $this->redirectToRoute('app_index');
         }
+
+        if (!$ticket->getId())
+        {
+            $this->addFlash(
+                'notice',
+                'Ticket not found!'
+            );
+
+            return $this->redirectToRoute('app_index');
+        }
+
+        $tools = new Tool();
+
+        $ticket->flightTimeDisp = $tools->parseHourMinute($ticket->getFlightTime(), 1);
+
+        $cntAdult = $searchTicket->getAdult();
+        $cntKid = $searchTicket->getKid();
+        $cntInf = $searchTicket->getInfant();
 
         return $this->render('default/checkout.html.twig', [
             'pageSetting' => $pageSetting,
@@ -110,8 +123,8 @@ class DefaultController extends AbstractController
         $pageSetting = new PageSetting();
         $pageSetting->metaTitle = 'List Tickets';
 
-        $customers = $doctrine->getRepository(TicketCustomer::class)->findAll();
-        $tickets = $doctrine->getRepository(Ticket::class)->findAll();
+        $customers = $doctrine->getRepository(TicketCustomer::class)->findBy(array(), array('id'=>'DESC'));
+        $tickets = $doctrine->getRepository(Ticket::class)->findByPnr();
         //var_dump($tickets);
 
         $cntTicket = count($tickets);
@@ -119,6 +132,8 @@ class DefaultController extends AbstractController
         {
             foreach ($customers as $customer)
             {
+                $tickets[$iT]->customerName = '';
+                $tickets[$iT]->customerLastName = '';
                 if ($customer->getTicketId() && $customer->getTicketId()->getId()==$tickets[$iT]->getId())
                 {
                     $tickets[$iT]->customerName = $customer->getName();

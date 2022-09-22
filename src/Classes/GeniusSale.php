@@ -15,8 +15,9 @@ class GeniusSale extends Genius
     public array    $reiseanmelder;
     public string   $zahlung          = '';
 
-    public function sale(ParameterBagInterface $parameter, EntityManager $entityManager, Request $request, FlightResult $flight)
+    public function sale(ParameterBagInterface $parameter, EntityManager $entityManager, Request $request, FlightResult $flight):ResponseZy
     {
+        //var_dump($flight);exit;
         $responseZy = new ResponseZy();
 
         try {
@@ -82,38 +83,56 @@ class GeniusSale extends Genius
 ';
             }
 
+            //<Datum>'.\DateTime::createFromFormat('Y-m-d', $flight->getDepartingDate()).'</Datum>
             $parLeistungen = '';
             $parLeistungen .= '
                     <Flugauswahl>
                         <FlugID>'.$flight->getFlightID().'</FlugID>
-                        <Datum>'.\DateTime::createFromFormat('Y-m-d', $flight->getDepartureTime()).'</Datum>
+                        <Datum>'.$flight->getDepartingDate().'</Datum>
                         <Carrier>'.$flight->getCarrier().'</Carrier>
                         <Flugnummer>'.$flight->getFlightNumber().'</Flugnummer>
                         <Von>'.$flight->getFromWhere().'</Von>
                         <Nach>'.$flight->getToWhere().'</Nach>
                         <Tarif>'.''.'</Tarif>
-                        <TnZuordnung></TnZuordnung>
                         <Preis_ERW>'.$flight->getPriceADT().'</Preis_ERW>
                         <Preis_KIND>'.$flight->getPriceKid().'</Preis_KIND>
                         <Preis_BABY>'.$flight->getPriceInf().'</Preis_BABY>
+                        <TnZuordnung></TnZuordnung>
                     </Flugauswahl>
 ';
+            if (isset($flight->returnFlight))
+            {
+                $parLeistungen .= '
+                    <Flugauswahl>
+                        <FlugID>'.$flight->returnFlight->getFlightID().'</FlugID>
+                        <Datum>'.$flight->returnFlight->getDepartingDate().'</Datum>
+                        <Carrier>'.$flight->returnFlight->getCarrier().'</Carrier>
+                        <Flugnummer>'.$flight->returnFlight->getFlightNumber().'</Flugnummer>
+                        <Von>'.$flight->returnFlight->getFromWhere().'</Von>
+                        <Nach>'.$flight->returnFlight->getToWhere().'</Nach>
+                        <Tarif>'.''.'</Tarif>
+                        <Preis_ERW>'.$flight->returnFlight->getPriceADT().'</Preis_ERW>
+                        <Preis_KIND>'.$flight->returnFlight->getPriceKid().'</Preis_KIND>
+                        <Preis_BABY>'.$flight->returnFlight->getPriceInf().'</Preis_BABY>
+                        <TnZuordnung></TnZuordnung>
+                    </Flugauswahl>
+';
+            }
 
             $reiseanmelder = '
-                    <Anrede>H</Anrede>
-                    <Vorname>airtuerk</Vorname>
-                    <Nachname>Service GmbH</Nachname>
-                    <Strasse></Strasse>
-                    <PLZ></PLZ>
-                    <Ort>Frankfurt am Main</Ort>
-                    <Land>DE</Land>
-                    <Telefon1>+491112223333</Telefon1>
-                    <Telefon2>+491112223334</Telefon2>
-                    <Telefax>+491112223333</Telefax>
-                    <Email>ticket@airtuerk.de</Email>
-                    <Optionsbuchung></Optionsbuchung>
-                    <NetresysAgenturnummer></NetresysAgenturnummer>
-                    <Marge>0</Marge>
+                    <Reiseanmelder>
+                        <Anrede>H</Anrede>
+                        <Vorname>airtuerk</Vorname>
+                        <Nachname>Service GmbH</Nachname>
+                        <Strasse>Musterstr. 6</Strasse>
+                        <PLZ>13509</PLZ>
+                        <Ort>Frankfurt am Main</Ort>
+                        <Land>DE</Land>
+                        <Telefon1>+491112223333</Telefon1>
+                        <Telefon2>+491112223334</Telefon2>
+                        <Telefax>+491112223333</Telefax>
+                        <Email>ticket@airtuerk.de</Email>
+                    </Reiseanmelder>
 ';
 
             $param = '<?xml version="1.0" encoding="utf-8"?>
@@ -129,9 +148,7 @@ class GeniusSale extends Genius
                 <![CDATA[<Daten>'.$parLeistungen.'</Daten>]]>
             </ns2:parLeistungen>
             <ns2:parReiseanmelder>
-                <![CDATA[<Daten>
-                    <Reiseanmelder>'.$reiseanmelder.'</Reiseanmelder>
-                </Daten>]]>
+                <![CDATA[<Daten>'.$reiseanmelder.'</Daten>]]>
             </ns2:parReiseanmelder>
             <ns2:parFix></ns2:parFix>
             <ns2:parKey>'.$this->getKey().'</ns2:parKey>
@@ -162,12 +179,18 @@ class GeniusSale extends Genius
             //var_dump($result);
             if (isset($error[0]->Text)) {
                 $forPnr = explode('VORGANGSNUMMER :',  $error[0]->Text);
-                $pnr = trim($forPnr[1]);
+                if (isset($forPnr[1]))
+                {
+                    $pnr = trim($forPnr[1]);
 
-                //TODO: PNR dan önceki müşteriyi bulup işlemlerini yap
-                //TODO: yöneticiyi bilgilendir
+                    //TODO: PNR dan önceki müşteriyi bulup işlemlerini yap
+                    //TODO: yöneticiyi bilgilendir
 
-                throw new \Exception('This flight added to system. Please contact our customer sevice.');
+                    throw new \Exception('This flight added to system. Please contact our customer sevice.');
+                }
+                else {
+                    throw new \Exception($error[0]->Text);
+                }
             }
             else if (isset($result[0]->Vorgang)) {
                 $pnr = $result[0]->Vorgang;
@@ -176,8 +199,8 @@ class GeniusSale extends Genius
             //var_dump($pnr);
 
             if ($pnr || $pnr!='') {
-                $ticketId = 4;//geçici
-                $responseSale = $this->sale_success($entityManager, $ticket, $ticketId, $pnr, $supplierResponsePrice, $ticketCustomers);
+                $toolGenius = new ToolGenius();
+                $responseSale = $toolGenius->sale_success($entityManager, $ticket, $ticketId, $pnr, $supplierResponsePrice, $ticketCustomers);
                 //var_dump($responseSale);
                 if (!$responseSale->status)
                 {
@@ -185,6 +208,7 @@ class GeniusSale extends Genius
                 }
 
                 $responseZy->results['pnr'] = $pnr;
+                $responseZy->results['ticketId'] = $ticketId;
             }
 
             $entityManager->flush();
@@ -197,42 +221,6 @@ class GeniusSale extends Genius
         }
 
         //var_dump($responseZy);
-        return $responseZy->send_json();
-    }
-
-    public function sale_success(EntityManager $entityManager, Ticket $ticket, $ticketId, $pnr, $supplierResponsePrice, $ticketCustomers): ResponseZy
-    {
-        $responseZy = new ResponseZy();
-
-        try {
-            $ticket->setPnrNo($pnr);
-            $ticket->setSupplierResponsePrice($supplierResponsePrice);
-            $ticket->setStatus(1);
-
-            //müşterileri DB ye yazma. Yetişkin 1 i yazdık (fakat yazmamış olabilir)
-            foreach ($ticketCustomers as $ticketCustomer)
-            {
-                if ($ticketCustomer->customerId)
-                {
-                    continue;
-                }
-                $ticketCustomerSave = new TicketCustomer();
-                $ticketCustomerSave->save_customer($entityManager, $ticket, $ticketCustomer);
-            }
-
-            //pnr ı müşteriye de yazıyoruz
-            $ticketCustomerUpdate = $entityManager->getRepository(\App\Entity\TicketCustomer::class)->find($ticketCustomers[0]->customerId);
-            //var_dump($ticketCustomerUpdate);
-            if ($ticketCustomerUpdate)
-            {
-                $ticketCustomerUpdate->setPnrNo($pnr);
-            }
-        }
-        catch (\Exception $exception) {
-            $responseZy->status = false;
-            $responseZy->message = $exception->getMessage();
-        }
-
         return $responseZy;
     }
 }

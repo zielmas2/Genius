@@ -81,6 +81,20 @@ class TicketRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function findByPnr()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT t
+            FROM App\Entity\Ticket t
+            WHERE t.pnr_no > :pnr
+            ORDER BY t.id DESC'
+        )->setParameter('pnr', '');
+
+        return $query->getResult();
+    }
+
 //    /**
 //     * @return Ticket[] Returns an array of Ticket objects
 //     */

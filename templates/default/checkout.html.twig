@@ -28,7 +28,7 @@
                             <input type="hidden" name="fromWhere" value="{{ searchTicket.fromWhere }}">
                             <input type="hidden" name="toWhere" value="{{ searchTicket.toWhere }}">
                             <input type="hidden" name="departDate" value="{{ searchTicket.departingDate|date('m/d/Y') }}">
-                            <input type="hidden" name="returnDepartingDate" value="{{ searchTicket.returnDepartingDate?searchTicket.returnDepartingDate|date('m/d/Y'):'' }}">
+                            <input type="hidden" name="returnDate" value="{{ searchTicket.returnDepartingDate?searchTicket.returnDepartingDate|date('m/d/Y'):'' }}">
                             <input type="hidden" name="whoADT" value="{{ searchTicket.adult }}">
                             <input type="hidden" name="whoKid" value="{{ searchTicket.kid }}">
                             <input type="hidden" name="whoInf" value="{{ searchTicket.infant }}">
@@ -40,12 +40,12 @@
                                     <input type="hidden" name="cType[]" value="1">
                                 <div class="form-group row">
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="name">first name</label>
-                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="name">first name*</label>
+                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="lastname">last name</label>
-                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="lastname">last name*</label>
+                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                 </div>
                                     {% if i==1 %}
@@ -90,12 +90,12 @@
                                     <h3>{% if cntKid>1 %}{{ i }}.{% endif %} Kids</h3>
                                 <div class="form-group row">
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="name">first name</label>
-                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="name">first name*</label>
+                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="lastname">last name</label>
-                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="lastname">last name*</label>
+                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                 </div>
                                     {% endfor %}
@@ -107,12 +107,12 @@
                                     <h3>{% if cntInf>1 %}{{ i }}.{% endif %} Baby</h3>
                                 <div class="form-group row">
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="name">first name</label>
-                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="name">first name*</label>
+                                        <input type="text" id="name" name="name[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                     <div class="col-sm-6 col-md-5">
-                                        <label for="lastname">last name</label>
-                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" />
+                                        <label for="lastname">last name*</label>
+                                        <input type="text" id="lastname" name="lastname[]" class="input-text full-width" value="" placeholder="" required />
                                     </div>
                                 </div>
                                     {% endfor %}
@@ -176,7 +176,7 @@
                             <figure class="clearfix">
                                 <a title="" href="flight-detailed.html" class="middle-block"><img class="middle-item" alt="" src="http://placehold.it/75x75"><div style="position: absolute; font-size: 0.75em; top: 30%; left: 13%;">{{ ticket.airline }}</div></a>
                                 <div class="travel-title">
-                                    <h5 class="box-title">({{ searchTicket.fromWhere }}) to ({{ searchTicket.toWhere }})<small>Oneway flight</small></h5>
+                                    <h5 class="box-title">({{ searchTicket.fromWhere }}) to ({{ searchTicket.toWhere }})<small>{{ ticket.direction==2?'Returning Flight':'Oneway flight' }}</small></h5>
                                     <a href="#" class="button">EDIT</a>
                                 </div>
                             </figure>
@@ -196,6 +196,24 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if ticket.direction==2 %}
+                            <div class="details">
+                                <div class="constant-column-3 timing clearfix">
+                                    <div class="check-in">
+                                        <label>Take off</label>
+                                        <span>{{ ticket.returnDepartureDate|date('j F, Y') }}<br />{{ ticket.returnDepartureDate|date('H:i') }}</span>
+                                    </div>
+                                    <div class="duration text-center">
+                                        <i class="soap-icon-clock"></i>
+                                        <span></span>
+                                    </div>
+                                    <div class="check-out">
+                                        <label>landing</label>
+                                        <span>{{ ticket.returnArrivingDate|date('j F, Y') }}<br />{{ ticket.returnArrivingDate|date('H:i') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
                         </article>
 
                         <h4>Other Details</h4>
@@ -204,7 +222,7 @@
                             <dt class="feature">Flight type:</dt><dd class="value">Economy</dd>
                             <dt class="feature">base fare:</dt><dd class="value">{{ ticket.adultPrice }}&nbsp;{{ ticket.currency }}</dd>
                             <dt class="feature">taxes and fees:</dt><dd class="value">{{ ticket.tax }}</dd>
-                            <dt class="total-price">Total Price</dt><dd class="total-price-value">{{ ticket.adultPrice }}&nbsp;{{ ticket.currency }}</dd>
+                            <dt class="total-price">Total Price</dt><dd class="total-price-value">{{ ticket.totalPrice }}&nbsp;{{ ticket.currency }}</dd>
                         </dl>
                     </div>
                 </div>

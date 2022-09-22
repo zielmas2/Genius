@@ -185,6 +185,9 @@
         {% block header %}{% endblock %}
     </header>
 
+    {% for notice in app.flashes('notice') %}
+        <div style="font-size: 21px; color: red; padding: 30px; text-align: center;">{{ notice }}</div>
+    {% endfor %}
     {% block content %}{% endblock %}
 
     <footer id="footer">

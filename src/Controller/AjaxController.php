@@ -132,9 +132,22 @@ class AjaxController extends AbstractController
             $ticket->setPriceKid($flight->getPriceKid());
             $ticket->setPriceInf($flight->getPriceInf());
             $ticket->setTax($flight->getTax());
+            //$ticket->setTotalPrice(($flight->getPriceADT() * $flight->getAdt()) + ($flight->getPriceKid() * $flight->getKid()) + ($flight->getPriceInf() * $flight->getInf()) + $flight->getTax());
+            $ticket->setTotalPrice($flight->getTotalPrice());
             $ticket->setCurrency($flight->getCurrency());
             $ticket->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
             $ticket->setStatus(3);
+
+            if ($flight->isHasTwoWay()==2)
+            {
+                //kalkış tarih ve saati ayarlanıyor
+                $returnDepartureDateTime = \DateTime::createFromFormat('d.m.Y H:i', ($flight->returnFlight->getDepartingDate().' '.$flight->returnFlight->getDepartureTime()));
+                //iniş tarih ve saati ayarlanıyor
+                $returnArrivingDateTime = \DateTime::createFromFormat('d.m.Y H:i', ($flight->returnFlight->getArrivingDate().' '.$flight->returnFlight->getArrivalTime()));
+
+                $ticket->setReturnDepartureDate($returnDepartureDateTime);
+                $ticket->setReturnArrivingDate($returnArrivingDateTime);
+            }
 
             $entityManager->persist($ticket);
             $entityManager->flush();
@@ -189,6 +202,7 @@ class AjaxController extends AbstractController
                 //var_dump($flightResult);
                 if ($flightResult->flightNumber==$request->get('fNo'))
                 {
+
                     $flight = $flightResult;
                     break;
                 }
@@ -200,7 +214,14 @@ class AjaxController extends AbstractController
             }
 
             $geniusSale = new GeniusSale();
-            $geniusSale->sale($this->container->get('parameter_bag'), $entityManager, $request, $flight);
+            $sale = $geniusSale->sale($this->container->get('parameter_bag'), $entityManager, $request, $flight);
+            if (!$sale->status)
+            {
+                throw new \Exception($sale->message);
+            }
+
+            $responseZy->results['pnr'] = $sale->results['pnr'];
+            $responseZy->results['ticketId'] = $sale->results['ticketId'];
         }
         catch (\Exception $exception) {
             $responseZy->status = false;

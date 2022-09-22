@@ -21,6 +21,7 @@
                     <div class="booking-information travelo-box">
                         <h2>Booking Status</h2>
                         <hr />
+                        {% if ticket.pnrNo!='' %}
                         <div class="booking-confirmation clearfix">
                             <i class="soap-icon-recommend icon circle"></i>
                             <div class="message">
@@ -29,15 +30,24 @@
                             </div>
                             <a href="#" class="print-button button btn-small">PRINT DETAILS</a>
                         </div>
+                        {% else %}
+                        <div class="booking-confirmation clearfix">
+                            <i class="soap-icon-close icon circle"></i>
+                            <div class="message">
+                                <h4 class="text-danger">There is a proble, please contact administrator.</h4>
+                            </div>
+                        </div>
+                        {% endif %}
                         <hr />
                         <h2>Traveler Information</h2>
                         <dl class="term-description">
-                            <dt>Booking number:</dt><dd>{{ ticket.pnrNo }}</dd>
+                            <dt>Booking number:</dt><dd style="font-size: 18px; color: red; font-weight: bold; line-height: 1;">{{ ticket.pnrNo }}</dd>
                             <dt>Route:</dt><dd>({{ searchTicket.fromWhere }}) to ({{ searchTicket.toWhere }})</dd>
                             <dt>Date:</dt><dd>{{ ticket.departureDate|date('m-d-Y H:i') }}</dd>
+                            {% if ticket.returnDepartureDate %}<dt>Return Date:</dt><dd>{{ ticket.returnDepartureDate|date('m-d-Y H:i') }}</dd>{% endif %}
                             <dt>First name:</dt><dd>{{ customer.name }}</dd>
                             <dt>Last name:</dt><dd>{{ customer.surname }}</dd>
-                            <dt>E-mail address:</dt><dd>{{ customer.email }}</dd>
+                            <dt>E-mail:</dt><dd>{{ customer.email }}</dd>
                             <dt>Phone:</dt><dd>{{ customer.phone }}</dd>
                         </dl>
                     </div>

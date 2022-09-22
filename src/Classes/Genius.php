@@ -48,6 +48,8 @@ class Genius
             $client->soap_defencoding = 'UTF-8';
             $client->decode_utf8 = false;
 
+            $returnFlights = false;
+
             $geniusData = array(
                 'parAgenturID'      => $this->agenturID,
                 'parKey'            => $this->key,
@@ -77,11 +79,19 @@ class Genius
             {
                 throw new \Exception('No Flight found!');
             }
+
+            $resultsReturn = false;
             if (isset($result['GVResult']['diffgram']['NewDataSet']['GV_Hinflug']['VON'])) {
                 $results[0] = $result['GVResult']['diffgram']['NewDataSet']['GV_Hinflug'];
             }
             else {
                 $results = $result['GVResult']['diffgram']['NewDataSet']['GV_Hinflug'];
+            }
+            if (isset($result['GVResult']['diffgram']['NewDataSet']['GV_Rueckflug']['VON'])) {
+                $resultsReturn[0] = $result['GVResult']['diffgram']['NewDataSet']['GV_Rueckflug'];
+            }
+            elseif (isset($result['GVResult']['diffgram']['NewDataSet']['GV_Rueckflug'])) {
+                $resultsReturn = $result['GVResult']['diffgram']['NewDataSet']['GV_Rueckflug'];
             }
             //var_dump($results);
             //var_dump($results[0]['ZUSCHLAEGE']);
@@ -108,55 +118,49 @@ class Genius
                 }
             }
 
-            return $this->parseResults($results, $search);
+            $tools = new Tool();
+
+            $toolsGenius = new ToolGenius();
+            $flightsDepart = $toolsGenius->parseResults($results, $search);
+            if ($resultsReturn)
+            {
+                $returnFlights = $toolsGenius->parseResults($resultsReturn, $search);
+            }
+            //var_dump($returns);
+
+            if ($returnFlights)
+            {
+                /*
+                 * Gidişler dönüşler ile beraber gelmediğinden ya kartezyen çarpımı yapılacak veya aynı taşıyıcılar bir araya getirilecek ya da gidiş seçimi yapdıktan sora dönüş seçimi yapılmalıdır.
+                 * Şimdilik bir gidiş bir dönüş şeklinde yapıyoruz, dönüş e veri kalmamış ise rastgele bir tanesi ekleniyor
+                 */
+
+                $cntFlg = count($flightsDepart);
+                $iFr = 0;
+                for ($iF=0; $iF<$cntFlg; $iF++)
+                {
+                    if (isset($returnFlights[$iFr]))
+                    {
+                        $flightsDepart[$iF]->returnFlight = $returnFlights[$iFr];
+                        $iFr++;
+                    }
+                    else {
+                        $flightsDepart[$iF]->returnFlight = $returnFlights[random_int(0, ($iFr-1))];
+                    }
+
+                    //dönüş fiyatını toplam fiyata ekliyor
+                    $flightsDepart[$iF]->setTotalPrice($flightsDepart[$iF]->getTotalPrice() + $flightsDepart[$iF]->returnFlight->getTotalPrice());
+                    $flightsDepart[$iF]->setTotalPriceDisp($tools->formatPrice($flightsDepart[$iF]->getTotalPrice(), $flightsDepart[$iF]->getCurrency(), 1));
+                }
+            }
+            //var_dump($flightsDepart);
+
+            return $flightsDepart;
         }
         catch (\Exception $exception) {
             //var_dump($exception->getMessage());
             return false;
         }
-    }
-
-    public function parseResults($results, Search $search)
-    {
-        $flightResults = false;
-        $tools = new Tool();
-
-        if ($results) {
-            foreach ($results as $result) {
-                $flightResult = new FlightResult();
-                $flightResult->setFromWhere($result['VON']);
-                $flightResult->setToWhere($result['NACH']);
-                $flightResult->setDepartingDate($result['Datum']);
-                $flightResult->setArrivingDate($result['Ankunftsdatum']);
-                $flightResult->setDepartureTime($result['ABFLUG']);
-                $flightResult->setArrivalTime($result['ANKUNFT']);
-                $flightResult->setFlightTime($result['Flugzeit']);
-                $flightResult->setPrice($result['Preis_ERW_RoundtTrip']);
-                $flightResult->setPriceADT($result['Preis_ERW']);
-                $flightResult->setPriceKid($result['Preis_KIND']);
-                $flightResult->setPriceInf($result['Preis_BABY']);
-                $flightResult->setTax($result['TAX']);
-                $flightResult->setCurrency($result['Waehrung']);
-                $flightResult->setPriceClass($result['Tarif']);
-                $flightResult->setFlightNumber($result['FLUGNUMMER']);
-                $flightResult->setFlightID($result['FlugID']);
-                $flightResult->setAirline($result['AIRLINE']);
-                $flightResult->setAirlineCode($tools->createSlug($flightResult->getAirline()));
-                $flightResult->setCarrier($result['CARRIER']);
-                $flightResult->setFlightType($result['FLUGZEUGTYP']);
-                $flightResult->setFreeBag($result['FREIGEPAECK']);
-                $flightResult->setFreeBagSize($result['MAX_ANZAHL_GEPAECKSTUECKE']);
-                $flightResult->setAdt($search->whoADT);
-                $flightResult->setKid($search->whoKid);
-                $flightResult->setInf($search->whoInf);
-
-                $flightResults[] = $flightResult;
-            }
-        }
-
-        //$results = $result;
-
-        return $flightResults;
     }
 
     public function searchFromHttpRequest(Request $request, EntityManager $entityManager, Session $session, $parameterBag):array {
@@ -176,7 +180,6 @@ class Genius
             $search->toWhere = $request->get('toWhere');
             $dateDep = str_replace(array('%2F'), array('/'), $request->get('departDate'));
             $dateReturn = str_replace(array('%2F'), array('/'), $request->get('returnDate'));
-            //$search->returnDate = $request->get('returnDate')??'';
             $search->whoADT = $adult;
             $search->whoKid = $kid&&$kid>0?$kid:0;
             $search->whoInf = $inf&&$inf>0?$inf:0;
@@ -192,8 +195,6 @@ class Genius
                     $dateReturn2 = $dateReturn&&$dateReturn!=''?\DateTime::createFromFormat('d.m.Y', $dateReturn):false;
                     break;
             }
-            //var_dump($dateDep);
-            //var_dump($dateReturn2);
             $search->departDate = $dateDep2->format('d.m.Y');
             $search->returnDate = $dateReturn2?$dateReturn2->format('d.m.Y'):'';
 
@@ -206,7 +207,6 @@ class Genius
             $searchTicket->setAdult($search->whoADT);
             $searchTicket->setKid($search->whoKid);
             $searchTicket->setInfant($search->whoInf);
-            //$searchTicket->setPriceTotal($request->get('price'));
             $searchTicket->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
             $searchTicket->setStatus(1);
 
@@ -223,20 +223,6 @@ class Genius
             if (!$results)
             {
                 throw new \Exception('No Flight found!');
-            }
-
-            $cntRsl = count($results);
-            for ($iRsl=0; $iRsl<$cntRsl; $iRsl++) {//reorganize flights data
-                //GMT yi tarihlere eklemiş görünüyor, GMT ye göre işlem yapmaya gerek yok, yolladğı tarih ve saat direkt basılabilir
-                $dateDep3 = \DateTime::createFromFormat('d.m.Y H:i', $results[$iRsl]->departingDate.' '.$results[$iRsl]->departureTime);
-                $results[$iRsl]->departingDateDisp = $dateDep3->format('D j, Y, g:i a');
-
-                $dateArr3 = \DateTime::createFromFormat('d.m.Y H:i', $results[$iRsl]->arrivingDate.' '.$results[$iRsl]->arrivalTime);
-                $results[$iRsl]->arrivingDateDisp = $dateArr3->format('D j, Y, g:i a');
-
-                //uçuş süresi için uçuş tarihleri arasındaki farkı bul dersek GMT den dolayı hatalı sonuç verir, bu yüzden kendi gönderdiğini alıyoruz
-                $results[$iRsl]->flightTimeDisp = $tools->parseHourMinute($results[$iRsl]->flightTime);
-                $results[$iRsl]->flightTimeShort = $tools->parseHourMinute($results[$iRsl]->flightTime, 1);
             }
 
             $responseSearch['results'] = $results;

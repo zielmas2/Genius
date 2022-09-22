@@ -18,7 +18,12 @@ class FlightResult
     public float $priceADT;
     public float $priceKid          = 0;
     public float $priceInf          = 0;
+    public float $priceADTRT;
+    public float $priceKidRT        = 0;
+    public float $priceInfRT        = 0;
     public float $tax               = 0;
+    public float $totalPrice;
+    public string $totalPriceDisp;
     public string $priceClass;
     public string $currency;
     public string $airline;
@@ -33,6 +38,11 @@ class FlightResult
     public int $adt;
     public int $kid     = 0;
     public int $inf     = 0;
+
+    public string $departingDateDisp    = '';
+    public string $arrivingDateDisp     = '';
+    public string $flightTimeDisp       = '';
+    public string $flightTimeShort      = '';
 
     /**
      * @return string
@@ -261,6 +271,54 @@ class FlightResult
     /**
      * @return float
      */
+    public function getPriceADTRT(): float
+    {
+        return $this->priceADTRT;
+    }
+
+    /**
+     * @param float $priceADTRT
+     */
+    public function setPriceADTRT(float $priceADTRT): void
+    {
+        $this->priceADTRT = $priceADTRT;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPriceKidRT(): float
+    {
+        return $this->priceKidRT;
+    }
+
+    /**
+     * @param float $priceKidRT
+     */
+    public function setPriceKidRT(float $priceKidRT): void
+    {
+        $this->priceKidRT = $priceKidRT;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPriceInfRT(): float
+    {
+        return $this->priceInfRT;
+    }
+
+    /**
+     * @param float $priceInfRT
+     */
+    public function setPriceInfRT(float $priceInfRT): void
+    {
+        $this->priceInfRT = $priceInfRT;
+    }
+
+    /**
+     * @return float
+     */
     public function getTax(): float
     {
         return $this->tax;
@@ -272,6 +330,38 @@ class FlightResult
     public function setTax(float $tax): void
     {
         $this->tax = $tax;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalPrice(): float
+    {
+        return $this->totalPrice;
+    }
+
+    /**
+     * @param float $totalPrice
+     */
+    public function setTotalPrice(float $totalPrice): void
+    {
+        $this->totalPrice = $totalPrice;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotalPriceDisp(): string
+    {
+        return $this->totalPriceDisp;
+    }
+
+    /**
+     * @param string $totalPriceDisp
+     */
+    public function setTotalPriceDisp(string $totalPriceDisp): void
+    {
+        $this->totalPriceDisp = $totalPriceDisp;
     }
 
     /**
