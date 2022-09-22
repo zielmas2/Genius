@@ -67,6 +67,20 @@ class TicketRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function findAllWithDetail()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT t, st
+            FROM App\Entity\Ticket t
+            INNER JOIN t.search_ticket_id st
+            ORDER BY t.id DESC'
+        );
+
+        return $query->getResult();
+    }
+
 //    /**
 //     * @return Ticket[] Returns an array of Ticket objects
 //     */

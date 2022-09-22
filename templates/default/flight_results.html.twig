@@ -31,64 +31,57 @@
                         <div class="toggle-container filters-container">
                             <div class="panel style1 arrow-right">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#price-filter" class="collapsed">Price</a>
-                                </h4>
-                                <div id="price-filter" class="panel-collapse collapse">
-                                    <div class="panel-content">
-                                        <div id="price-range"></div>
-                                        <br />
-                                        <span class="min-price-label pull-left"></span>
-                                        <span class="max-price-label pull-right"></span>
-                                        <div class="clearer"></div>
-                                    </div><!-- end content -->
-                                </div>
-                            </div>
-
-                            <div class="panel style1 arrow-right">
-                                <h4 class="panel-title">
                                     <a data-toggle="collapse" href="#airlines-filter" class="collapsed">Airlines</a>
                                 </h4>
                                 <div id="airlines-filter" class="panel-collapse collapse">
                                     <div class="panel-content">
-                                        <ul class="check-square filters-option">
-                                            <li><a href="#">Major Airline<small>($620)</small></a></li>
-                                            <li><a href="#">United Airlines<small>($982)</small></a></li>
-                                            <li class="active"><a href="#">delta airlines<small>($1,127)</small></a></li>
-                                            <li><a href="#">Alitalia<small>($2,322)</small></a></li>
-                                            <li><a href="#">US airways<small>($3,158)</small></a></li>
-                                            <li><a href="#">Air France<small>($4,239)</small></a></li>
-                                            <li><a href="#">Air tahiti nui<small>($5,872)</small></a></li>
+                                        <ul class="check-square filters-option airlines_ait">
                                         </ul>
-                                        <a class="button btn-mini">MORE</a>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="panel style1 arrow-right">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#modify-search-panel" class="collapsed">Modify Search</a>
+                                    <a data-toggle="collapse" href="#modify-search-panel" class="" aria-expanded="true">Modify Search</a>
                                 </h4>
-                                <div id="modify-search-panel" class="panel-collapse collapse">
+                                <div id="modify-search-panel" class="panel-collapse collapse in">
                                     <div class="panel-content">
-                                        <form method="post">
+                                        <form action="{{ path('app_flight_results') }}" method="get">
                                             <div class="form-group">
                                                 <label>Leaving from</label>
-                                                <input type="text" class="input-text full-width" placeholder="" value="city, district, or specific airpot" />
+                                                <input type="text" name="fromWhere" class="input-text full-width" placeholder="" value="{{ search.fromWhere }}" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label>To</label>
+                                                <input type="text" name="toWhere" class="input-text full-width" placeholder="" value="{{ search.toWhere }}" />
                                             </div>
                                             <div class="form-group">
                                                 <label>Departure on</label>
                                                 <div class="datepicker-wrap">
-                                                    <input type="text" name="date_from" class="input-text full-width" placeholder="mm/dd/yy" />
+                                                    <input type="text" name="departDate" class="input-text full-width" placeholder="mm/dd/yy" value="{{ search.departDate }}" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label>Arriving On</label>
                                                 <div class="datepicker-wrap">
-                                                    <input type="text" name="date_to" class="input-text full-width" placeholder="mm/dd/yy" />
+                                                    <input type="text" name="returnDate" class="input-text full-width" placeholder="mm/dd/yy" />
                                                 </div>
                                             </div>
+                                            <div class="form-group" style="float: left; width: 33%;">
+                                                <label>Adults</label>
+                                                <input type="number" class="input-text full-width" name="whoADT" value="{{ search.whoADT }}" placeholder="" min="1" max="15" />
+                                            </div>
+                                            <div class="form-group" style="float: left; width: 33%;">
+                                                <label>Kids</label>
+                                                <input type="number" class="input-text full-width" name="whoKid" value="{{ search.whoKid }}" placeholder="" min="0" max="5" />
+                                            </div>
+                                            <div class="form-group" style="float: left; width: 33%;">
+                                                <label>Infants</label>
+                                                <input type="number" class="input-text full-width" name="whoInf" value="{{ search.whoInf }}" placeholder="" min="0" max="3" />
+                                            </div>
                                             <br />
-                                            <button class="btn-medium icon-check uppercase full-width">search again</button>
+                                            <button type="submit" class="btn-medium icon-check uppercase full-width">search again</button>
                                         </form>
                                     </div>
                                 </div>

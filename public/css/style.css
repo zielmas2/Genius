@@ -483,8 +483,8 @@ img.full-width {
 /* Icons */
 @font-face {
   font-family: 'soap-icons';
-  src: url("../fonts/soap-icons.eot?26664784");
-  src: url("../fonts/soap-icons.eot?26664784#iefix") format("embedded-opentype"), url("../fonts/soap-icons.woff?26664784") format("woff"), url("../fonts/soap-icons.ttf?26664784") format("truetype"), url("../fonts/soap-icons.svg?26664784#soap-icons") format("svg");
+  src: url("/fonts/soap-icons.eot?26664784");
+  src: url("/fonts/soap-icons.eot?26664784#iefix") format("embedded-opentype"), url("/fonts/soap-icons.woff?26664784") format("woff"), url("/fonts/soap-icons.ttf?26664784") format("truetype"), url("/fonts/soap-icons.svg?26664784#soap-icons") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -1329,7 +1329,7 @@ img.full-width {
 /* font */
 @font-face {
   font-family: 'NexaBlack';
-  src: url("../fonts/NexaBlack.eot?") format("eot"), url("../fonts/NexaBlack.otf") format("opentype"), url("../fonts/NexaBlack.woff") format("woff"), url("../fonts/NexaBlack.ttf") format("truetype"), url("../fonts/NexaBlack.svg#NexaBlack") format("svg");
+  src: url("/fonts/NexaBlack.eot?") format("eot"), url("/fonts/NexaBlack.otf") format("opentype"), url("/fonts/NexaBlack.woff") format("woff"), url("/fonts/NexaBlack.ttf") format("truetype"), url("/fonts/NexaBlack.svg#NexaBlack") format("svg");
 }
 /* 1.2. Layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #page-wrapper {
@@ -2010,7 +2010,7 @@ button.btn-extra.yellow > span em, input[type="button"].button.btn-extra.yellow 
   right: 0;
   width: 30px;
   height: 100%;
-  background: url(../images/icon/icon-check.png) no-repeat center center #7db921;
+  background: url(/images/icon/icon-check.png) no-repeat center center #7db921;
 }
 .icon-check:hover:after {
   background-color: #98ce44;
@@ -2367,7 +2367,7 @@ blockquote.style2:before, blockquote.style2:after {
   -ms-transform: rotateY(180deg) scale(0.5, 0.5);
   -o-transform: rotateY(180deg) scale(0.5, 0.5);
   transform: rotateY(180deg) scale(0.5, 0.5);
-  background: url(../images/icon/hover-effect.png) no-repeat center;
+  background: url(/images/icon/hover-effect.png) no-repeat center;
   filter: alpha(opacity=0);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   -moz-opacity: 0;
@@ -6343,7 +6343,7 @@ ul.check-circle li:before {
   display: block;
 }
 #header .mobile-menu-toggle {
-  background: url(../images/icon/mobile-menu.png) no-repeat center center #01b7f2;
+  background: url(/images/icon/mobile-menu.png) no-repeat center center #01b7f2;
   padding: 0;
   margin: 0;
   height: 66px;
@@ -6385,7 +6385,7 @@ ul.check-circle li:before {
   display: block;
   width: 130px;
   height: 30px;
-  background: url("../images/logo_txt.png") no-repeat #01b7f2;
+  background: url("/images/logo_txt.png") no-repeat #01b7f2;
   content: "";
   top: 0;
   right: 0;
@@ -6806,7 +6806,7 @@ ul.check-circle li:before {
 }
 
 #header .logo a, #footer .logo a, .chaser .logo a {
-  background: url("../images/logo.png") no-repeat 0 0;
+  background: url("/images/logo.png") no-repeat 0 0;
   display: block;
 }
 #header .logo img, #footer .logo img, .chaser .logo img {
@@ -6827,7 +6827,7 @@ ul.check-circle li:before {
   padding-left: 20px !important;
 }
 .lang-flag.en-us {
-  background: url(../images/icon/flags/en-us.png) no-repeat left center;
+  background: url(/images/icon/flags/en-us.png) no-repeat left center;
 }
 
 /* 3.1.5. Main Menu */
@@ -7558,8 +7558,8 @@ ul.menu.mini li:hover a, ul.menu.mini li.active a {
 .no-backgroundsize .chaser .logo a {
   background-size: auto 20px;
   background-image: none;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/logo.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/logo.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='scale')";
 }
 
 /* 3.2.0. Sign up & Login box */
@@ -10929,7 +10929,7 @@ button.ui-button::-moz-focus-inner {
   display: inline-block;
 }
 #footer.style1 {
-  background: url("../images/themes/footer/style01/sand.png") no-repeat center top;
+  background: url("/images/themes/footer/style01/sand.png") no-repeat center top;
   padding-top: 132px;
   margin-top: 40px;
 }
@@ -10992,7 +10992,7 @@ button.ui-button::-moz-focus-inner {
   background: #fff;
 }
 #footer.style1 .logo a {
-  background-image: url("../images/logo/skin2-logo.png");
+  background-image: url("/images/logo/skin2-logo.png");
 }
 #footer.style1 .copyright p {
   color: #9e9e9e;
@@ -11001,7 +11001,7 @@ button.ui-button::-moz-focus-inner {
   border-color: #e01a33;
 }
 #footer.style2 {
-  background: url("../images/themes/footer/style02/sky.png") no-repeat center top;
+  background: url("/images/themes/footer/style02/sky.png") no-repeat center top;
   padding-top: 132px;
   margin-top: 80px;
 }
@@ -11064,7 +11064,7 @@ button.ui-button::-moz-focus-inner {
   background: #fff;
 }
 #footer.style2 .logo a {
-  background-image: url("../images/logo/skin3-logo.png");
+  background-image: url("/images/logo/skin3-logo.png");
 }
 #footer.style2 .copyright p {
   color: #9e9e9e;
@@ -11073,7 +11073,7 @@ button.ui-button::-moz-focus-inner {
   border-color: #ff6000;
 }
 #footer.style3 {
-  background: url("../images/themes/footer/style03/sea.png") no-repeat center 60px #f8f7f3;
+  background: url("/images/themes/footer/style03/sea.png") no-repeat center 60px #f8f7f3;
   padding-top: 192px;
 }
 #footer.style3 .footer-wrapper {
@@ -11137,7 +11137,7 @@ button.ui-button::-moz-focus-inner {
   background: #fff;
 }
 #footer.style3 .logo a {
-  background-image: url("../images/logo/skin3-logo.png");
+  background-image: url("/images/logo/skin3-logo.png");
 }
 #footer.style3 .copyright p {
   color: #9e9e9e;
@@ -11147,7 +11147,7 @@ button.ui-button::-moz-focus-inner {
   color: #12a0c3;
 }
 #footer.style4 > .footer-wrapper {
-  background: url("../images/themes/footer/style04/sky.png") no-repeat center bottom;
+  background: url("/images/themes/footer/style04/sky.png") no-repeat center bottom;
   padding-bottom: 0;
 }
 #footer.style4 > .footer-wrapper > .container:first-child {
@@ -11178,7 +11178,7 @@ button.ui-button::-moz-focus-inner {
   margin-top: 0;
 }
 #footer.style5 > .footer-wrapper {
-  background: url("../images/themes/footer/style05/sky.png") no-repeat center bottom;
+  background: url("/images/themes/footer/style05/sky.png") no-repeat center bottom;
   padding-bottom: 0;
 }
 #footer.style5 > .footer-wrapper > .container:first-child {
@@ -11209,7 +11209,7 @@ button.ui-button::-moz-focus-inner {
   margin-top: 0;
 }
 #footer.style6 > .footer-wrapper {
-  background: url("../images/themes/footer/style06/sky.png") no-repeat center bottom;
+  background: url("/images/themes/footer/style06/sky.png") no-repeat center bottom;
   padding-bottom: 0;
 }
 #footer.style6 > .footer-wrapper > .container:first-child {
@@ -12497,7 +12497,7 @@ button.ui-button::-moz-focus-inner {
   width: 100px;
   height: 102px;
   color: #fff;
-  background: url(../images/icon/discount.png) no-repeat;
+  background: url(/images/icon/discount.png) no-repeat;
 }
 .image-box .discount {
   z-index: 1;

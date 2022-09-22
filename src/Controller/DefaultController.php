@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Classes\PageSetting;
+use App\Classes\Search;
+use App\Classes\Tool;
 use App\Entity\Ticket;
 use App\Entity\TicketCustomer;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,13 +30,20 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/flight-results', name: 'app_flight_results')]
-    public function flight_results(): Response
+    public function flight_results(Request $request): Response
     {
         $pageSetting = new PageSetting();
         $pageSetting->metaTitle = 'Flight Results';
 
+        $search = new Search();
+        $search->fromWhere = $request->get('fromWhere');
+        $search->toWhere = $request->get('toWhere');
+        $search->departDate = $request->get('departDate');
+        $search->returnDate = $request->get('returnDate');
+
         return $this->render('default/flight_results.html.twig', [
-            'pageSetting' => $pageSetting
+            'pageSetting' => $pageSetting,
+            'search' => $search
         ]);
     }
 
@@ -50,28 +59,79 @@ class DefaultController extends AbstractController
         //var_dump($ticket);
         $searchTicket = $ticket->getSearchTicketId();
 
-        /*$formCustomer = $this->createFormBuilder(new TicketCustomer())
-            ->add('name', TextType::class)
-            ->add('surname', TextType::class)
-            //->add('dueDate', DateType::class)
-            //->add('save', SubmitType::class, ['label' => 'Create Task'])
-            ->getForm();*/
+        $cntAdult   = 1;
+        $cntKid     = 0;
+        $cntInf     = 0;
 
-        /*$params = '';
-        $ch = curl_init('http://80.81.250.53/GeniusServerTest/GeniusServer.asmx?wsdl');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "$params");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FAILONERROR, true);
-        $resultsCurl = curl_exec($ch);
-        var_dump($resultsCurl);*/
+        if ($ticket->getId())
+        {
+            $tools = new Tool();
+
+            $ticket->flightTimeDisp = $tools->parseHourMinute($ticket->getFlightTime(), 1);
+
+            $cntAdult = $searchTicket->getAdult();
+            $cntKid = $searchTicket->getKid();
+            $cntInf = $searchTicket->getInfant();
+        }
 
         return $this->render('default/checkout.html.twig', [
             'pageSetting' => $pageSetting,
             'ticket' => $ticket,
             'searchTicket' => $searchTicket,
-            //'formCustomer' => $formCustomer
+            'cntAdult' => $cntAdult,
+            'cntKid' => $cntKid,
+            'cntInf' => $cntInf
+        ]);
+    }
+
+    #[Route('/booking-result/{id}', name: 'app_booking_result')]
+    public function booking_result(Request $request, ManagerRegistry $doctrine): Response
+    {
+        $pageSetting = new PageSetting();
+        $pageSetting->metaTitle = 'Booking Result';
+
+        $ticketId = $request->get('id');
+
+        $ticket = $doctrine->getRepository(Ticket::class)->findOneByTicketld($ticketId);
+        $searchTicket = $ticket->getSearchTicketId();
+        $customer = $doctrine->getRepository(TicketCustomer::class)->findOneBy(array('ticket_id'=>$ticket));
+
+        return $this->render('default/booking_result.html.twig', [
+            'pageSetting' => $pageSetting,
+            'ticket' => $ticket,
+            'searchTicket' => $searchTicket,
+            'customer' => $customer
+        ]);
+    }
+
+    #[Route('/list-tickets', name: 'app_list_tickets')]
+    public function list_tickets(ManagerRegistry $doctrine): Response
+    {
+        $pageSetting = new PageSetting();
+        $pageSetting->metaTitle = 'List Tickets';
+
+        $customers = $doctrine->getRepository(TicketCustomer::class)->findAll();
+        $tickets = $doctrine->getRepository(Ticket::class)->findAll();
+        //var_dump($tickets);
+
+        $cntTicket = count($tickets);
+        for ($iT=0; $iT<$cntTicket; $iT++)
+        {
+            foreach ($customers as $customer)
+            {
+                if ($customer->getTicketId() && $customer->getTicketId()->getId()==$tickets[$iT]->getId())
+                {
+                    $tickets[$iT]->customerName = $customer->getName();
+                    $tickets[$iT]->customerLastName = $customer->getSurname();
+                    break;
+                }
+            }
+        }
+        //var_dump($tickets);
+
+        return $this->render('default/list_tickets.html.twig', [
+            'pageSetting' => $pageSetting,
+            'tickets' => $tickets
         ]);
     }
 }

@@ -83,8 +83,8 @@ class TicketCustomer
     #[ORM\Column(nullable: true)]
     private ?int $updated_by = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $status = null;
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $status = null;
 
     public function getId(): ?int
     {
@@ -367,12 +367,12 @@ class TicketCustomer
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 

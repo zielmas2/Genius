@@ -2,17 +2,17 @@
 
 namespace App\Classes;
 
-class GeniusSaleLeistung extends Genius
+class GeniusSaleLeistung
 {
-    public string $flugID;
-    public string $datum;
-    public string $carrier;
-    public string $flugnummer;
-    public string $von;
-    public string $nach;
-    public string $tarif;
-    public string $preisERW;
-    public string $preisKIND;
-    public string $preisBABY;
-    public string $tnZuordnung;
+    public string $FlugID;
+    public string $Datum;
+    public string $Carrier;
+    public string $Flugnummer;
+    public string $Von;
+    public string $Nach;
+    public string $Tarif;
+    public string $Preis_ERW;
+    public string $Preis_KIND;
+    public string $Preis_BABY;
+    public string $TnZuordnung;
 }

@@ -23,6 +23,20 @@ tjq('#frm_sale').submit(function (e) {
             html: xhr.message
         });
 
+        Swal.fire({
+            type: 'success',
+            //title: '',
+            timer: 5000,
+            text: xhr.message
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                window.location.href = '/booking-result/'+xhr.pnr;
+            }
+            else {
+                window.location.href = '';
+            }
+        });
+
     }).fail(function (xhr) {
         tjq(".loader").css({ display: "none" });
         Swal.fire({

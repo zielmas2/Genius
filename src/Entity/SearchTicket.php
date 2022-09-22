@@ -14,6 +14,18 @@ class SearchTicket
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 5)]
+    private ?string $from_where = null;
+
+    #[ORM\Column(length: 5)]
+    private ?string $to_where = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $departing_date = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $return_departing_date = null;
+
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $adult = null;
 
@@ -44,18 +56,6 @@ class SearchTicket
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $status = null;
 
-    #[ORM\Column(length: 5)]
-    private ?string $from_where = null;
-
-    #[ORM\Column(length: 5)]
-    private ?string $to_where = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $departing_date = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $return_departing_date = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -64,6 +64,54 @@ class SearchTicket
     public function getAdult(): ?int
     {
         return $this->adult;
+    }
+
+    public function getFromWhere(): ?string
+    {
+        return $this->from_where;
+    }
+
+    public function setFromWhere(string $from_where): self
+    {
+        $this->from_where = $from_where;
+
+        return $this;
+    }
+
+    public function getToWhere(): ?string
+    {
+        return $this->to_where;
+    }
+
+    public function setToWhere(string $to_where): self
+    {
+        $this->to_where = $to_where;
+
+        return $this;
+    }
+
+    public function getDepartingDate(): ?\DateTimeInterface
+    {
+        return $this->departing_date;
+    }
+
+    public function setDepartingDate(\DateTimeInterface $departing_date): self
+    {
+        $this->departing_date = $departing_date;
+
+        return $this;
+    }
+
+    public function getReturnDepartingDate(): ?\DateTimeInterface
+    {
+        return $this->return_departing_date;
+    }
+
+    public function setReturnDepartingDate(?\DateTimeInterface $return_departing_date): self
+    {
+        $this->return_departing_date = $return_departing_date;
+
+        return $this;
     }
 
     public function setAdult(int $adult): self
@@ -177,54 +225,6 @@ class SearchTicket
     public function setStatus(int $status): self
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    public function getFromWhere(): ?string
-    {
-        return $this->from_where;
-    }
-
-    public function setFromWhere(string $from_where): self
-    {
-        $this->from_where = $from_where;
-
-        return $this;
-    }
-
-    public function getToWhere(): ?string
-    {
-        return $this->to_where;
-    }
-
-    public function setToWhere(string $to_where): self
-    {
-        $this->to_where = $to_where;
-
-        return $this;
-    }
-
-    public function getDepartingDate(): ?\DateTimeInterface
-    {
-        return $this->departing_date;
-    }
-
-    public function setDepartingDate(\DateTimeInterface $departing_date): self
-    {
-        $this->departing_date = $departing_date;
-
-        return $this;
-    }
-
-    public function getReturnDepartingDate(): ?\DateTimeInterface
-    {
-        return $this->return_departing_date;
-    }
-
-    public function setReturnDepartingDate(?\DateTimeInterface $return_departing_date): self
-    {
-        $this->return_departing_date = $return_departing_date;
 
         return $this;
     }

@@ -67,6 +67,9 @@ class Ticket
     #[ORM\Column(length: 3)]
     private ?string $currency = null;
 
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $pnr_no = null;
+
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $created_at = null;
 
@@ -84,6 +87,9 @@ class Ticket
 
     #[ORM\OneToMany(mappedBy: 'ticket_id', targetEntity: TicketCustomer::class)]
     private Collection $ticket_customer;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $supplier_response_price = null;
 
     public function __construct()
     {
@@ -191,6 +197,54 @@ class Ticket
         return $this;
     }
 
+    public function getCarrier(): ?string
+    {
+        return $this->carrier;
+    }
+
+    public function setCarrier(?string $carrier): self
+    {
+        $this->carrier = $carrier;
+
+        return $this;
+    }
+
+    public function getDepartureDate(): ?\DateTimeInterface
+    {
+        return $this->departure_date;
+    }
+
+    public function setDepartureDate(\DateTimeInterface $departure_date): self
+    {
+        $this->departure_date = $departure_date;
+
+        return $this;
+    }
+
+    public function getArrivingDate(): ?\DateTimeInterface
+    {
+        return $this->arriving_date;
+    }
+
+    public function setArrivingDate(\DateTimeInterface $arriving_date): self
+    {
+        $this->arriving_date = $arriving_date;
+
+        return $this;
+    }
+
+    public function getDirection(): ?int
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(int $direction): self
+    {
+        $this->direction = $direction;
+
+        return $this;
+    }
+
     public function getAdultPrice(): ?float
     {
         return $this->adult_price;
@@ -247,6 +301,18 @@ class Ticket
     public function setCurrency(string $currency): self
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    public function getPnrNo(): ?string
+    {
+        return $this->pnr_no;
+    }
+
+    public function setPnrNo(?string $pnr_no): self
+    {
+        $this->pnr_no = $pnr_no;
 
         return $this;
     }
@@ -341,50 +407,14 @@ class Ticket
         return $this;
     }
 
-    public function getCarrier(): ?string
+    public function getSupplierResponsePrice(): ?float
     {
-        return $this->carrier;
+        return $this->supplier_response_price;
     }
 
-    public function setCarrier(?string $carrier): self
+    public function setSupplierResponsePrice(?float $supplier_response_price): self
     {
-        $this->carrier = $carrier;
-
-        return $this;
-    }
-
-    public function getDepartureDate(): ?\DateTimeInterface
-    {
-        return $this->departure_date;
-    }
-
-    public function setDepartureDate(\DateTimeInterface $departure_date): self
-    {
-        $this->departure_date = $departure_date;
-
-        return $this;
-    }
-
-    public function getArrivingDate(): ?\DateTimeInterface
-    {
-        return $this->arriving_date;
-    }
-
-    public function setArrivingDate(\DateTimeInterface $arriving_date): self
-    {
-        $this->arriving_date = $arriving_date;
-
-        return $this;
-    }
-
-    public function getDirection(): ?int
-    {
-        return $this->direction;
-    }
-
-    public function setDirection(int $direction): self
-    {
-        $this->direction = $direction;
+        $this->supplier_response_price = $supplier_response_price;
 
         return $this;
     }

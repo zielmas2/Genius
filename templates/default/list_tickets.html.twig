@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .tour-detail-page dl.term-description dt, .tour-detail-page dl.term-description dd {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        #tour-details .flights .table-cell {
+            padding: 4px 4px;
+        }
+        #tour-details .price-section .details {
+            margin-bottom: 6px;
+        }
+        #tour-details .price-section {
+            padding: 10px 20px 0px 20px;
+        }
+        .travelo-box {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="page-title-container">
+        <div class="container">
+            <div class="page-title pull-left">
+                <h2 class="entry-title">Tickets</h2>
+            </div>
+            <ul class="breadcrumbs pull-right">
+                <li><a href="{{ path('app_index') }}">HOME</a></li>
+                <li class="active">List Tickets</li>
+            </ul>
+        </div>
+    </div>
+
+    <section id="content">
+        <div class="container tour-detail-page">
+            <div class="row">
+                <div id="main" class="col-md-12">
+                    <div id="tour-details" class="travelo-box">
+                        {% for ticket in tickets %}
+                        <div class="intro small-box table-wrapper full-width hidden-table-sms">
+                            <div class="col-sm-4 table-cell travelo-box">
+                                <dl class="term-description">
+                                    <dt>PNR:</dt><dd style="font-size: 18px; color: red; font-weight: bold; line-height: 1;">{{ ticket.pnrNo }}</dd>
+                                    <dt>Customer:</dt><dd>{{ ticket.customerName }}&nbsp;{{ ticket.customerLastName }}</dd>
+                                    <dt>Price:</dt><dd>{{ ticket.supplierResponsePrice }}&nbsp;{{ ticket.currency }}</dd>
+                                    <dt>Created at:</dt><dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>
+                                </dl>
+                            </div>
+                            <div class="col-sm-8 table-cell">
+                                <div class="detailed-features">
+                                    <div class="price-section clearfix">
+                                        <div class="details">
+                                            <h4 class="box-title"><small>{{ ticket.direction==2?'Two Way Flight':'One Way Flight' }}</small></h4>
+                                        </div>
+                                        <div class="details">
+                                            <span class="price">{{ ticket.supplierResponsePrice }}&nbsp;{{ ticket.currency }}</span>
+                                            <a href="javascript:;" class="button green btn-small uppercase" onclick="ticket_detail({{ ticket.id }});">Detail</a>
+                                        </div>
+                                    </div>
+                                    <div class="flights table-wrapper">
+                                        <div class="table-row">
+                                            <div class="table-cell">
+                                                <h4 class="box-title">({{ ticket.searchTicketId.fromWhere }}) to ({{ ticket.searchTicketId.toWhere }})<small>{{ ticket.airline }}</small></h4>
+                                            </div>
+                                            <div class="table-cell">
+                                                <i class="icon soap-icon-plane-right take-off"></i>
+                                                <dl><dt>Departs</dt><dd>{{ ticket.departureDate|date('m.d.Y H:i') }}</dd></dl>
+                                            </div>
+                                            <div class="table-cell">
+                                                <i class="icon soap-icon-plane-right landing"></i>
+                                                <dl><dt>Arrives</dt><dd>{{ ticket.arrivingDate|date('m.d.Y H:i') }}</dd></dl>
+                                            </div>
+                                        </div>
+                                        {% if ticket.direction==2 %}
+                                        <div class="table-row">
+                                            <div class="table-cell">
+                                                <h4 class="box-title">Rome to Paris<small>30 Jan 2015</small></h4>
+                                            </div>
+                                            <div class="table-cell">
+                                                <i class="icon soap-icon-plane-right take-off"></i>
+                                                <dl><dt>Departs</dt><dd>22:10 PM</dd></dl>
+                                            </div>
+                                            <div class="table-cell">
+                                                <i class="icon soap-icon-plane-right landing"></i>
+                                                <dl><dt>Arrives</dt><dd>08:50 PM</dd></dl>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal" id="mdl_ticket_detail" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #fc4c00; color: #ffffff;">
+                    <div style="font-size: 19px; font-weight: 700;" id="ticket_pnr"></div>
+                </div>
+                <div class="modal-body">
+                    <div id="ticket_detail"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        function ticket_detail(id)
+        {
+            tjq(".loader").css({ display: "block" });
+            tjq.ajax({
+                type: "POST",
+                url: "{{ path('app_ajax_ticket_detail') }}",
+                data: { "id": id },
+            }).done(function (xhr) {
+                tjq(".loader").css({ display: "none" });
+
+                if (xhr.status == false) {
+                    Swal.fire({
+                        type: 'error',
+                        html: xhr.message
+                    });
+                    return false;
+                }
+
+                tjq('#ticket_pnr').text(xhr.results.pnrNo);
+                tjq('#ticket_detail').html(prepare_html(xhr.results.pnrNo, xhr.results.results));
+                tjq('#mdl_ticket_detail').modal('show');
+
+            }).fail(function (xhr) {
+                tjq(".loader").css({ display: "none" });
+                Swal.fire({
+                    type: 'error',
+                    html: xhr.textStatus + "\n" + JSON.stringify(xhr, null, "\t")
+                });
+            });
+        }
+
+        function prepare_html(pnr, results)
+        {
+            let pnr_response = results.pnrResponse;
+
+            let html = '        <div id="tour-details" class="travelo-box">\n'+
+                '                <div class="intro small-box table-wrapper full-width hidden-table-sms">\n'+
+                '                   <div class="col-sm-4 table-cell travelo-box">\n'+
+                '                       <dl class="term-description">\n'+
+                '                           <dt>PNR:</dt><dd style="font-size: 18px; color: red; font-weight: bold; line-height: 1;">'+pnr+'</dd>\n'+
+                '                           <dt>Customer:</dt><dd>'+pnr_response.name+'&nbsp;'+pnr_response.lastName+'</dd>\n'+
+                '                           <dt>Price:</dt><dd>'+pnr_response.totalPrice+'&nbsp;'+pnr_response.currency+'</dd>\n'+
+                '                           <dt>Date:</dt><dd>'+pnr_response.dateDeparture+'</dd>\n'+
+                '                       </dl>\n'+
+                '                   </div>\n'+
+                '            <div class="col-sm-8 table-cell">\n'+
+                '                <div class="detailed-features">\n'+
+                '                    <div class="price-section clearfix" style="padding: 10px 20px 20px 20px;">\n'+
+                '                        <div class="details">\n'+
+                '                            <h4 class="box-title">'+pnr_response.fromCity+' to '+pnr_response.toCity+'<small>('+pnr_response.fromWhere+') to ('+pnr_response.toWhere+')</small></h4>\n'+
+                '                        </div>\n'+
+                '                        <div class="details">\n'+
+                '                            <span class="price"></span>\n'+
+                '                            <a href="javascript:;" class="button green btn-small uppercase">'+pnr_response.totalPrice+'&nbsp;'+pnr_response.currency+'</a>\n'+
+                '                        </div>\n'+
+                '                    </div>\n'+
+                '                    <div class="flights table-wrapper">\n'+
+                '                        <div class="table-row">\n'+
+                '                            <div class="table-cell">\n'+
+                '                                <h4 class="box-title"><small></small></h4>\n'+
+                '                            </div>\n'+
+                '                            <div class="table-cell">\n'+
+                '                                <i class="icon soap-icon-plane-right take-off"></i>\n'+
+                '                                <dl><dt>Departs</dt><dd></dd>'+pnr_response.dateDeparture+'</dl>\n'+
+                '                            </div>\n'+
+                '                            <div class="table-cell">\n'+
+                '                                <i class="icon soap-icon-plane-right landing"></i>\n'+
+                '                                <dl><dt>Arrives</dt><dd></dd>'+pnr_response.dateArrive+'</dl>\n'+
+                '                            </div>\n'+
+                '                        </div>\n';
+            if (pnr_response.hasReturn) {
+                html += '                        <div class="table-row">\n' +
+                    '                            <div class="table-cell">\n' +
+                    '                                <h4 class="box-title">Rome to Paris<small>30 Jan 2015</small></h4>\n' +
+                    '                            </div>\n' +
+                    '                            <div class="table-cell">\n' +
+                    '                                <i class="icon soap-icon-plane-right take-off"></i>\n' +
+                    '                                <dl><dt>Departs</dt><dd>22:10 PM</dd></dl>\n' +
+                    '                            </div>\n' +
+                    '                            <div class="table-cell">\n' +
+                    '                                <i class="icon soap-icon-plane-right landing"></i>\n' +
+                    '                                <dl><dt>Arrives</dt><dd>08:50 PM</dd></dl>\n' +
+                    '                            </div>\n' +
+                    '                        </div>\n';
+            }
+            html += '                    </div>\n'+
+                '                </div>\n'+
+                '            </div>\n'+
+                '        </div>\n'+
+                '        </div>';
+
+            return html;
+        }
+    </script>
+{% endblock javascripts %}

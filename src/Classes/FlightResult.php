@@ -4,12 +4,12 @@ namespace App\Classes;
 
 class FlightResult
 {
-    public string $fromWhere;
+    public string $fromWhere        = '';
     public string $toWhere;
     public string $departingDate;
     public string $arrivingDate;
-    public string $departureTime;
-    public string $arrivalTime;
+    public string $departureTime    = '';
+    public string $arrivalTime      = '';
     public bool $hasTwoWay              = false;
     public bool $hasTransfer            = false;
     public string $cityTakeOff      = '';
